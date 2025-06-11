@@ -1,12 +1,8 @@
-def calcul_interets_composes(versement_annuel: float, taux_annuel: float, duree_annees: int) -> float:
-    """
-    Calcule le montant final avec intérêts composés et versements annuels constants.
+from datetime import datetime
+from functools import wraps
+from colorama import Fore, Style
 
-    :param versement_annuel: Montant versé chaque année
-    :param taux_annuel: Taux d’intérêt annuel (ex: 0.05 pour 5%)
-    :param duree_annees: Durée de l’épargne en années
-    :return: Montant final épargné
-    """
+def calcul_interets_composes(versement_annuel: float, taux_annuel: float, duree_annees: int) -> float:
     def accumuler(montant_actuel: float, annees_restantes: int) -> float:
         if annees_restantes == 0:
             return montant_actuel
@@ -28,3 +24,14 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+# Decorateur fonction suggestion_epargne ::: 
+def afficher_intro_comparaison(func):
+    @wraps(func)
+    def wrapper(personne, epargnes, *args, **kwargs):
+        maintenant = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print("\n" + "=" * 80)
+        print(f"📅 {maintenant} – Nous allons faire une comparaison de {Fore.YELLOW}{len(epargnes)}{Style.RESET_ALL} placements selon la situation de {Fore.MAGENTA}{personne.nom}{Style.RESET_ALL}.")
+        print("=" * 80 + "\n")
+        return func(personne, epargnes, *args, **kwargs)
+    return wrapper

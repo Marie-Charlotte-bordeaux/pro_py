@@ -3,7 +3,7 @@ from typing import List, Optional
 from src.mon_module.models.epargne import Epargne
 from src.mon_module.models.personne import Personne
 from src.mon_module.models.resultat import ResultatEpargne 
-from src.mon_module.utils import calcul_interets_composes 
+from src.mon_module.utils import calcul_interets_composes, afficher_intro_comparaison
 
 
 # Fonctions import 
@@ -86,7 +86,7 @@ def import_personnes(fichier: str) -> List[Personne]:
 # ----------------------------
 # Fonctions metier
 # ----------------------------
-
+@afficher_intro_comparaison
 def suggestion_epargne(personne: Personne, epargnes: List[Epargne], objectif: float, duree: int) -> List[ResultatEpargne]:
     resultats = []
 

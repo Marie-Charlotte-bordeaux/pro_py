@@ -8,7 +8,7 @@ class ResultatEpargne:
           self.objectif_atteint = objectif_atteint
         
   def afficher(self):
-    status = "Objectif atteint" if self.objectif_atteint else "Objectif non atteint"
+    status = "✅ Objectif atteint" if self.objectif_atteint else "❌ Objectif non atteint"
     print(f"Produit : {self.nom_produit}")
     print(f"Effort mensuel : {self.effort_mensuel:.2f} €")
     print(f"Montant final net : {self.montant_net_final:.2f} €")

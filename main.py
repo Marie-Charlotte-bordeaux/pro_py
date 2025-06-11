@@ -30,3 +30,22 @@ from src.mon_module.models.personne import Personne
 # # Affichage
 # for res in resultats:
 #     res.afficher()
+
+
+# Étape 1 : Charger les données
+epargnes = import_epargnes("epargnes.csv")
+personnes = import_personnes("personnes.csv")
+
+# Étape 2 : Choisir une personne 
+personne = personnes[29]
+objectif = personne.objectif
+duree = personne.duree_epargne
+
+print(f"\nSimulation pour {personne.nom} (objectif : {objectif} €, durée : {duree} ans)\n")
+
+# Étape 3 : Appeler la fonction de simulation
+resultats = suggestion_epargne(personne, epargnes, objectif, duree)
+
+# Étape 4 : Afficher les résultats formatés
+for resultat in resultats:
+    resultat.afficher()
