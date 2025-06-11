@@ -90,29 +90,38 @@ def import_personnes(fichier: str) -> List[Personne]:
 def suggestion_epargne(personne: Personne, epargnes: List[Epargne], objectif: float, duree: int) -> List[ResultatEpargne]:
     resultats = []
 
-    # Scénarios d'effort mensuel
-    base = personne.versement_mensuel_utilisateur
-    if base is None:
-        base = personne._calcul_capacite_epargne()
+    # Calcul de la capacité automatique
+    capacite = personne._calcul_capacite_epargne()
 
-    scenarios = [base * p for p in [0.25, 0.5, 0.75, 1.0]]
+    # 1er scénario : celui saisi par l’utilisateur (si existant)
+    scenarios = []
     if personne.versement_mensuel_utilisateur is not None:
-        scenarios = [personne.versement_mensuel_utilisateur] + scenarios
+        scenarios.append(personne.versement_mensuel_utilisateur)
+
+    # Les autres scénarios : % de la capacité (toujours à partir de la capacité)
+    scenarios += [capacite * p for p in [0.25, 0.5, 0.75, 1.0]]
 
     for epargne in epargnes:
         if duree < epargne.duree_min:
-            continue  # produit non disponible
+            continue
 
         for effort in scenarios:
             versement_annuel = effort * 12
-            if epargne.versement_max is not None and versement_annuel * duree > epargne.versement_max:
-                continue  # dépasse le plafond
+            total_versement = versement_annuel * duree
+
+            if epargne.versement_max is not None and total_versement > epargne.versement_max:
+                continue
 
             montant_brut = calcul_interets_composes(versement_annuel, epargne.taux_interet, duree)
             montant_net = montant_brut * (1 - epargne.fiscalite)
             objectif_atteint = montant_net >= objectif
 
-            resultat = ResultatEpargne(epargne.nom, effort, montant_net, objectif_atteint)
+            resultat = ResultatEpargne(
+                nom_produit=epargne.nom,
+                effort_mensuel=effort,
+                montant_final_net=montant_net,
+                objectif_atteint=objectif_atteint
+            )
             resultats.append(resultat)
 
     return resultats
